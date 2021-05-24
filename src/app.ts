@@ -8,6 +8,8 @@ type GoogleGeocodingResponseData = {
     status: 'OK' | 'ZERO_RESULTS';
 };
 
+// declare const google: any;
+
 async function searchAddressHandler(event: Event) {
     event.preventDefault();
 
@@ -28,6 +30,13 @@ async function searchAddressHandler(event: Event) {
         }
 
         const coordinates = data.results[0].geometry.location;
+
+        const map = new google.maps.Map(document.getElementById('map')!, {
+            center: coordinates,
+            zoom: 8
+        });
+
+        new google.maps.Marker({ position: coordinates, map });
     } catch (error) {
         alert('Something went wrong!');
 
@@ -35,4 +44,11 @@ async function searchAddressHandler(event: Event) {
     }
 }
 
+function appendGoogleScript() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}`;
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+appendGoogleScript();
 form.addEventListener('submit', searchAddressHandler);
